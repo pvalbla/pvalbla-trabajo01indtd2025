@@ -1,0 +1,101 @@
+---
+title: "Soluciones Trabajo Individual 01"
+author: "Pablo Valdés Blasco"
+format:
+  html: default
+  pdf: default
+---
+
+```{r}
+# Cargar las funciones del profesor
+source("teoriadecision_funciones_incertidumbre.R")
+library(tinytable)
+```
+
+# Problema 1. 
+
+## Apartado A. Caso favorable (beneficios)
+
+```{r}
+tb1a <- crea.tablaX(c(8, -2, 5,
+                      4, 3, 6,
+                      10, -6, 1,
+                      7, 2, 2),
+                    numalternativas = 4, numestados = 3,
+                    nb_alternativas = c("A1","A2","A3","A4"),
+                    nb_estados = c("E1","E2","E3"))
+
+# Aplicamos los distintos criterios de decisión
+wald_a <- criterio.Wald(tb1a, favorable = TRUE)
+optimista_a <- criterio.Optimista(tb1a, favorable = TRUE)
+hurwicz_a <- criterio.Hurwicz(tb1a, alfa = 0.4, favorable = TRUE)
+savage_a <- criterio.Savage(tb1a, favorable = TRUE)
+laplace_a <- criterio.Laplace(tb1a, favorable = TRUE)
+puntoideal_a <- criterio.PuntoIdeal(tb1a, favorable = TRUE)
+```
+
+En una situación de beneficios, el **criterio de Wald** recomienda ser precavido, eligiendo la alternativa que asegure el mejor de los peores resultados.  
+El **criterio optimista** prioriza el máximo beneficio posible.  
+El **criterio de Hurwicz** equilibra ambos según el coeficiente α = 0.4, y los métodos de **Savage**, **Laplace** y **Punto Ideal** permiten contrastar la decisión final.  
+
+```{r}
+sol1a <- criterio.Todos(tb1a, alfa = 0.4, favorable = TRUE)
+tt(sol1a, rownames = TRUE)
+```
+
+```{r}
+dibuja.criterio.Hurwicz_Intervalos(tb1a, TRUE)
+```
+
+**Conclusión:**  
+En el caso favorable, la alternativa **A2** resulta ser la más coherente, ya que ofrece un equilibrio entre seguridad y beneficio y aparece como óptima en varios de los criterios aplicados (Wald, Hurwicz y Laplace).  
+Por tanto, la empresa debería escoger **A2** si espera un entorno de beneficios.  
+
+---
+
+## Apartado B. Caso desfavorable (costes)
+
+```{r}
+tb1b <- tb1a
+
+wald_b <- criterio.Wald(tb1b, favorable = FALSE)
+optimista_b <- criterio.Optimista(tb1b, favorable = FALSE)
+hurwicz_b <- criterio.Hurwicz(tb1b, alfa = 0.4, favorable = FALSE)
+savage_b <- criterio.Savage(tb1b, favorable = FALSE)
+laplace_b <- criterio.Laplace(tb1b, favorable = FALSE)
+puntoideal_b <- criterio.PuntoIdeal(tb1b, favorable = FALSE)
+
+sol1b <- criterio.Todos(tb1b, alfa = 0.4, favorable = FALSE)
+tt(sol1b, rownames = TRUE)
+```
+
+```{r}
+dibuja.criterio.Hurwicz(tb1b, FALSE)
+```
+
+**Conclusión:**  
+En la situación desfavorable (costes), la alternativa **A1** se considera la más prudente, pues minimiza los riesgos y aparece con frecuencia como la mejor opción bajo criterios conservadores como Wald y Savage.  
+Por tanto, si el contexto es incierto o con tendencia a pérdidas, **A1** sería la elección más razonable.  
+
+---
+
+# Problema 2.
+
+## Resolución (caso favorable)
+
+```{r}
+tb2 <- crea.tablaX(c(3,7,4,
+                     2,6,6,
+                     4,5,8,
+                     1,4,10),
+                   numalternativas = 4, numestados = 3,
+                   nb_alternativas = c("B1","B2","B3","B4"),
+                   nb_estados = c("E1","E2","E3"))
+
+sol2 <- criterio.Todos(tb2, alfa = 0.5, favorable = TRUE)
+tt(sol2, rownames = TRUE)
+```
+
+**Conclusión:**  
+Los resultados muestran que la alternativa **B3 (precio estándar)** es la más sólida y estable, siendo elegida como óptima en varios criterios, especialmente en Hurwicz y Laplace.  
+Por tanto, la librería debería optar por **mantener un precio estándar**, ya que proporciona un equilibrio adecuado entre riesgo y rentabilidad frente a la incertidumbre del mercado.
